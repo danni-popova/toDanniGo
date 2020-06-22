@@ -2,16 +2,12 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 )
 
 func getAllToDos(w http.ResponseWriter, r *http.Request) {
-	//TODO(danni):Validate auth
-	user := validateAuth(r.Header.Get("Authorization"))
-	fmt.Println(user)
 
 	// Query database
 	var todo []ToDo
@@ -55,7 +51,7 @@ func deleteToDo(w http.ResponseWriter, r *http.Request) {
 func main() {
 	r := mux.NewRouter()
 	api := r.PathPrefix("/api/todo").Subrouter()
-	api.HandleFunc("", getAllToDos).Methods(http.MethodGet) // done
+	api.HandleFunc("", getAllToDos).Methods(http.MethodGet)
 	api.HandleFunc("", createToDo).Methods(http.MethodPost)
 	api.HandleFunc("/{todoid}", updateToDo).Methods(http.MethodPut)
 	api.HandleFunc("/{todoid}", deleteToDo).Methods(http.MethodDelete)

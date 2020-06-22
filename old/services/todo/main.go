@@ -33,7 +33,7 @@ func createToDo(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateToDo(w http.ResponseWriter, r *http.Request) {
-	// Validate auth
+	// Validate user
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusAccepted)
@@ -41,7 +41,7 @@ func updateToDo(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteToDo(w http.ResponseWriter, r *http.Request) {
-	// Validate auth
+	// Validate user
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)

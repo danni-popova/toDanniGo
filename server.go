@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"github.com/jmoiron/sqlx"
@@ -23,21 +24,21 @@ const (
 )
 
 type ToDoRequest struct {
-	UserID      int       `json:"user_id"`
-	ID          int       `json:"id"`
-	Title       string    `json:"title"`
-	Description string    `json:"description,omitempty"`
-	Deadline    time.Time `json:"deadline,omitempty"`
+	UserID      int       `json:"user_id" db:"user_id"`
+	ID          int       `json:"id" db:"todo_id"`
+	Title       string    `json:"title" db:"title"`
+	Description string    `json:"description,omitempty" db:"description"`
+	Deadline    time.Time `json:"deadline,omitempty" db:"deadline"`
 }
 
 type ToDo struct {
-	ID          int       `json:"id" db:"todo_id"`
-	UserID      int       `json:"user_id" db:"user_id"`
-	Title       string    `json:"title" db:"title"`
-	Description string    `json:"description,omitempty" db:"description"`
-	CreatedAt   time.Time `json:"created_at" db:"created_at"`
-	Deadline    time.Time `json:"deadline,omitempty" db:"deadline"`
-	Done        bool      `json:"done" db:"done"`
+	ID          int          `json:"id" db:"todo_id"`
+	UserID      int          `json:"user_id" db:"user_id"`
+	Title       string       `json:"title" db:"title"`
+	Description string       `json:"description,omitempty" db:"description"`
+	CreatedAt   time.Time    `json:"created_at" db:"created_at"`
+	Deadline    sql.NullTime `json:"deadline,omitempty" db:"deadline"`
+	Done        bool         `json:"done" db:"done"`
 }
 
 func dbCon() (db *sqlx.DB) {
@@ -50,7 +51,6 @@ func dbCon() (db *sqlx.DB) {
 	if err != nil {
 		fmt.Println(err)
 	}
-
 	return db
 }
 
@@ -60,12 +60,11 @@ func getTodos(w http.ResponseWriter, r *http.Request) {
 	// Retrieve from database
 	// TODO: When auth is implemented, filter by user
 	db := dbCon()
-	td := []ToDo{}
+	var td []ToDo
 	err := db.Select(&td, "SELECT * FROM todo;")
 	if err != nil {
 		fmt.Println(err)
 	}
-
 	// Write response
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -86,19 +85,17 @@ func createTodo(w http.ResponseWriter, r *http.Request) {
 
 	// Write to database
 	db := dbCon()
-	var newID string
+	result, err := db.NamedQuery(`INSERT INTO todo(user_id, title, description) VALUES (:user_id, :title, :description) RETURNING todo_id;`, &td)
+	var lastID int
+	result.Scan(&lastID)
 
-	// Write new newtodo to database and return the id
-	err := db.QueryRow("INSERT INTO todo(user_id, title, description) VALUES ($1, $2, $3) RETURNING todo_id;",
-		td.UserID, td.Title, td.Description).Scan(&newID)
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	// Write response
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte(fmt.Sprintf(`{"id" : %s}`, newID)))
+	w.Write([]byte(string(lastID)))
 }
 
 func updateTodo(w http.ResponseWriter, r *http.Request) {

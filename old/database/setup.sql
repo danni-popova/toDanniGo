@@ -1,5 +1,8 @@
--- -- Create database
--- CREATE DATABASE todo;
+-- Create database
+CREATE DATABASE todo;
+
+-- Connect to database
+\c todo;
 
 -- Create users table
 CREATE TABLE registered_user(
@@ -27,18 +30,18 @@ CREATE TABLE todo_order(
     todos text []
 );
 
--- -- Insert test user values
--- INSERT INTO registered_user(email, first_name, last_name)
--- VALUES ('test1@mail.com', 'Test', 'Test'),
---        ('test2@mail.com', 'Test', 'Test'),
---        ('test3@mail.com', 'Test', 'Test');
---
--- -- Insert test todo values
--- INSERT INTO todo(user_id, title)
--- VALUES (1, 'Test todo 1'),
---        (1, 'Test todo 2'),
---        (1, 'Test todo 3');
---
--- -- Insert sorted todos
--- INSERT INTO todo_order
--- VALUES (1 , ARRAY['1', '2', '3']) ;
+-- Insert test user values
+INSERT INTO registered_user(email, first_name, last_name)
+VALUES ('test1@mail.com', 'Test', 'Test'),
+       ('test2@mail.com', 'Test', 'Test'),
+       ('test3@mail.com', 'Test', 'Test');
+
+-- Insert test todo values
+INSERT INTO todo(user_id, title, description, deadline)
+VALUES (1, 'Test todo 1', 'Description 1', '2016-06-22 19:10:25-07'),
+       (2, 'Test todo 2', 'Description 2', '2016-06-22 19:10:25-07'),
+       (3, 'Test todo 3', 'Description 3', '2016-06-22 19:10:25-07');
+
+-- Insert sorted todos
+INSERT INTO todo_order
+VALUES (1 , ARRAY['1', '2', '3']);

@@ -86,16 +86,20 @@ func createTodo(w http.ResponseWriter, r *http.Request) {
 	// Write to database
 	db := dbCon()
 	result, err := db.NamedQuery(`INSERT INTO todo(user_id, title, description) VALUES (:user_id, :title, :description) RETURNING todo_id;`, &td)
-	var lastID int
-	result.Scan(&lastID)
+	if err != nil {
+		fmt.Println(err)
+	}
 
+	var lastID int
+	result.Next() // I hate this line, but it's needed for the Scan to work
+	err = result.Scan(&lastID)
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte(string(lastID)))
+	w.Write([]byte(fmt.Sprintf(`{ "id" : %d }`, lastID)))
 }
 
 func updateTodo(w http.ResponseWriter, r *http.Request) {

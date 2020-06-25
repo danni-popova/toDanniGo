@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"github.com/jmoiron/sqlx"
@@ -9,7 +8,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -24,21 +22,23 @@ const (
 )
 
 type ToDoRequest struct {
-	UserID      int       `json:"user_id" db:"user_id"`
-	ID          int       `json:"id" db:"todo_id"`
-	Title       string    `json:"title" db:"title"`
+	UserID      int       `json:"user_id,omitempty" db:"user_id"`
+	ID          int       `json:"id,omitempty" db:"todo_id"`
+	Title       string    `json:"title, omitempty" db:"title"`
 	Description string    `json:"description,omitempty" db:"description"`
 	Deadline    time.Time `json:"deadline,omitempty" db:"deadline"`
+	CreatedAt   time.Time `json:"created_at,omitempty" db:"created_at"`
+	Done        bool      `json:"done" db:"done"`
 }
 
 type ToDo struct {
-	ID          int          `json:"id" db:"todo_id"`
-	UserID      int          `json:"user_id" db:"user_id"`
-	Title       string       `json:"title" db:"title"`
-	Description string       `json:"description,omitempty" db:"description"`
-	CreatedAt   time.Time    `json:"created_at" db:"created_at"`
-	Deadline    sql.NullTime `json:"deadline,omitempty" db:"deadline"`
-	Done        bool         `json:"done" db:"done"`
+	ID          int       `json:"id" db:"todo_id"`
+	UserID      int       `json:"user_id" db:"user_id"`
+	Title       string    `json:"title" db:"title"`
+	Description string    `json:"description,omitempty" db:"description"`
+	CreatedAt   time.Time `json:"created_at" db:"created_at"`
+	Deadline    time.Time `json:"deadline,omitempty" db:"deadline"`
+	Done        bool      `json:"done" db:"done"`
 }
 
 func dbCon() (db *sqlx.DB) {
@@ -75,23 +75,24 @@ func getTodos(w http.ResponseWriter, r *http.Request) {
 }
 
 func createTodo(w http.ResponseWriter, r *http.Request) {
-	//TODO: Authenticate
-
-	//TODO: Validate request - has to contain a title
-	// user and user has to exist in the db
 	reqBody, _ := ioutil.ReadAll(r.Body)
 	var td ToDoRequest
-	json.Unmarshal(reqBody, &td)
-
-	// Write to database
-	db := dbCon()
-	result, err := db.NamedQuery(`INSERT INTO todo(user_id, title, description) VALUES (:user_id, :title, :description) RETURNING todo_id;`, &td)
+	err := json.Unmarshal(reqBody, &td)
 	if err != nil {
 		fmt.Println(err)
 	}
 
+	// Write to database
+	db := dbCon()
+	result, err := db.NamedQuery(`INSERT INTO todo(user_id, title, description, deadline) 
+										VALUES (:user_id, :title, :description, :deadline) 
+										RETURNING todo_id;`, &td)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	result.Next()
 	var lastID int
-	result.Next() // I hate this line, but it's needed for the Scan to work
 	err = result.Scan(&lastID)
 	if err != nil {
 		fmt.Println(err)
@@ -103,34 +104,45 @@ func createTodo(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateTodo(w http.ResponseWriter, r *http.Request) {
-	//TODO: Authenticate
-
-	// Validate request
 	reqBody, _ := ioutil.ReadAll(r.Body)
-	var td ToDoRequest
-	json.Unmarshal(reqBody, &td)
-
-	// Build query
-	var sb strings.Builder
-	sb.WriteString(`UPDATE todo SET `)
-
-	if td.Title != "" {
-		sb.WriteString(" title=" + td.Title)
+	var toDoRequest ToDoRequest
+	err := json.Unmarshal(reqBody, &toDoRequest)
+	if err != nil {
+		fmt.Println(err)
 	}
 
-	if td.Description != "" {
-		sb.WriteString(" description=" + td.Description)
+	// Get the id from the request
+	pathParams := mux.Vars(r)
+	rID := pathParams["todo_id"]
+
+	var oldTd ToDoRequest
+	db := dbCon()
+	err = db.QueryRowx("SELECT * FROM todo WHERE todo_id=$1", rID).StructScan(&oldTd)
+	if err != nil {
+		fmt.Println(err)
 	}
 
-	if !td.Deadline.IsZero() {
-		sb.WriteString(" deadline=" + td.Deadline.String())
+	if toDoRequest.Title != "" {
+		oldTd.Title = toDoRequest.Title
 	}
-
-	sb.WriteString(" WHERE todo_id=" + string(td.ID) + ";")
+	if toDoRequest.Description != "" {
+		oldTd.Description = toDoRequest.Description
+	}
+	if !toDoRequest.Deadline.IsZero() {
+		oldTd.Deadline = toDoRequest.Deadline
+	}
+	if toDoRequest.Done {
+		oldTd.Done = true
+	}
 
 	// Write to database
-	db := dbCon()
-	_, err := db.Query(sb.String())
+	_, err = db.NamedQuery(`UPDATE todo 
+								  SET title=:title, 
+                				  description=:description, 
+                				  deadline=:deadline,
+								  done=:done
+                				  WHERE todo_id=:todo_id`,
+		&oldTd)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -138,27 +150,35 @@ func updateTodo(w http.ResponseWriter, r *http.Request) {
 	// Write response
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusAccepted)
-	w.Write([]byte(`{"message": "updateTodo called"}`))
+	marshalled, err := json.Marshal(oldTd)
+	w.Write([]byte(marshalled))
 }
 
 func deleteTodo(w http.ResponseWriter, r *http.Request) {
 	//TODO: Authenticate
 
 	// Validate request
+	pathParams := mux.Vars(r)
+	toDoID := pathParams["todo_id"]
 
 	// Retrieve from database
+	// TODO: check that todo is actually the user's
+	db := dbCon()
+	_, err := db.Query("DELETE FROM todo WHERE todo_id=$1", toDoID)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	// Write response
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(`{"message": "deleteTodo called"}`))
 }
 
 func StartServer() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", getTodos).Methods(http.MethodGet)
 	r.HandleFunc("/", createTodo).Methods(http.MethodPost)
-	r.HandleFunc("/", updateTodo).Methods(http.MethodPut)
-	r.HandleFunc("/", deleteTodo).Methods(http.MethodDelete)
+	r.HandleFunc("/{todo_id}/", updateTodo).Methods(http.MethodPut)
+	r.HandleFunc("/{todo_id}/", deleteTodo).Methods(http.MethodDelete)
 	log.Fatal(http.ListenAndServe(":8080", r))
 }

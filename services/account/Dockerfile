@@ -1,7 +1,7 @@
 FROM golang:latest
 
 RUN mkdir /tmp/app
-ADD . /tmp/app
+ADD ../.. /tmp/app
 WORKDIR /tmp/app
 
 RUN go build -o main .

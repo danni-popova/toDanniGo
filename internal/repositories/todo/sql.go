@@ -1,8 +1,6 @@
 package todo
 
 import (
-	"fmt"
-
 	"github.com/jmoiron/sqlx"
 )
 
@@ -10,44 +8,46 @@ type repository struct {
 	db *sqlx.DB
 }
 
+func (r *repository) Create(ctd ToDo) error {
+	// TODO(danni): Refactor later to return the created todo
+	if _, err := r.db.NamedQuery(`INSERT INTO todo(user_id, title, description, deadline)
+										VALUES (:user_id, :title, :description, :deadline)
+										RETURNING todo_id;`, &ctd); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *repository) Get(id string) (td ToDo, err error) {
+	if err = r.db.Select(&td, "SELECT * FROM todo WHERE todo_id=$1;", id); err != nil {
+		return ToDo{}, err
+	}
+	return td, nil
+}
+
+func (r *repository) List() (td []ToDo, err error) {
+	if err = r.db.Select(&td, "SELECT * FROM todo;"); err != nil {
+		return td, err
+	}
+	return td, nil
+}
+
+// TODO(danni): Implement in a non-gross way
+func (r *repository) Update(otd ToDo) (ntd ToDo, err error) {
+	panic("implement me")
+}
+
+func (r *repository) Delete(id string) error {
+	_, err := r.db.Query("DELETE FROM todo WHERE todo_id=$1", id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func NewRepository(db *sqlx.DB) Repository {
 	return &repository{
 		db: db,
 	}
-}
-
-func (r *repository) Create(cr CreateToDoRequest) error {
-
-	return nil
-}
-
-func (r *repository) Get(id string) (ToDo, error) {
-	var toDo ToDo
-
-	if err := r.db.Get(&toDo,
-		"SELECT * FROM todo WHERE todo_id=$1",
-		id); err != nil {
-		return ToDo{}, fmt.Errorf("sql get: #{err}")
-	}
-
-	return toDo, nil
-}
-
-func (r *repository) List() ([]ToDo, error) {
-	var td []ToDo
-
-	// TODO(danni): Filter on user when auth is implemented
-	if err := r.db.Select(&td, "SELECT * FROM todo;"); err != nil {
-		return nil, err
-	}
-
-	return td, nil
-}
-
-func (r *repository) Update(ur UpdateToDoRequest) (error, td ToDo) {
-	return nil
-}
-
-func (r *repository) Delete(id string) error {
-	return nil
 }

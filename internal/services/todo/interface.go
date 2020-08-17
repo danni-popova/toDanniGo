@@ -1,20 +1,22 @@
 package todo
 
-import "context"
+import (
+	"context"
+)
 
 type Service interface {
-	// Get the details for a single todanni
-	Get(ctx context.Context, id string) (err error, td ToDo)
+	// Get the details for a single todanni identified by the given ID.
+	Get(context.Context, *GetRequest) (err error, td ToDo)
 
-	// Get all todannis
-	List(ctx context.Context) (err error, td []ToDo)
+	// Get all todannis.
+	List(context.Context, *ListRequest) (err error, td []ToDo)
 
-	// Create a todanni
-	Create(ctx context.Context, td ToDo) (td ToDo, err error)
+	// Create a todanni.
+	Create(context.Context, *CreateRequest) (ToDo, error)
 
-	// Update a todanni
-	Update(ctx context.Context, td ToDo) (err error)
+	// Update a todanni.
+	Update(context.Context, *UpdateRequest) error
 
-	// Delete a todanni
-	Delete(ctx context.Context, id string) (err error)
+	// Delete a todanni identified by the given ID.
+	Delete(context.Context, *DeleteRequest) error
 }

@@ -1,8 +1,8 @@
-package main
+package sql
 
 import (
-	"database/sql"
 	"fmt"
+	"github.com/jmoiron/sqlx"
 )
 
 const (
@@ -13,25 +13,19 @@ const (
 	dbname   = "todo"
 )
 
-func main() {
+func Open() (*sqlx.DB, error) {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
 
-	db, err := sql.Open("postgres", psqlInfo)
+	db, err := sqlx.Open("postgres", psqlInfo)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	rows, err := db.Query("SELECT title FROM todo")
-	for rows.Next() {
-		var title string
-		err = rows.Scan(&title)
-		if err != nil {
-			panic(err)
-		}
-		fmt.Println(title)
-	}
+	return db, nil
+}
 
-	defer db.Close()
+func NewFromEnv() (*sqlx.DB, error) {
+	return Open()
 }

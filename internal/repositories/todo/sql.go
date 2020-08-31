@@ -1,13 +1,19 @@
 package todo
 
 import (
-	"time"
-
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
+	"time"
 )
 
 type repository struct {
 	db *sqlx.DB
+}
+
+func NewRepository(db *sqlx.DB) Repository {
+	return &repository{
+		db: db,
+	}
 }
 
 type ToDo struct {
@@ -31,11 +37,13 @@ func (r *repository) Create(ctd ToDo) error {
 	return nil
 }
 
-func (r *repository) Get(id string) (td ToDo, err error) {
-	if err = r.db.Select(&td, "SELECT * FROM todo WHERE todo_id=$1;", id); err != nil {
+func (r *repository) Get(id int) (td ToDo, err error) {
+	var tds []ToDo
+	if err = r.db.Select(&tds, "SELECT * FROM todo WHERE todo_id=$1", id); err != nil {
 		return ToDo{}, err
 	}
-	return td, nil
+	td = tds[0]
+	return
 }
 
 func (r *repository) List() (td []ToDo, err error) {
@@ -56,10 +64,4 @@ func (r *repository) Delete(id string) error {
 		return err
 	}
 	return nil
-}
-
-func NewRepository(db *sqlx.DB) Repository {
-	return &repository{
-		db: db,
-	}
 }

@@ -1,52 +1,9 @@
 package todo
 
-//
-//import (
-//	"encoding/json"
-//	"fmt"
-//	"io/ioutil"
-//	"log"
-//	"net/http"
-//	"strings"
-//	"time"
-//
-//	"github.com/jmoiron/sqlx"
-//	_ "github.com/lib/pq"
-//
-//	"github.com/gorilla/mux"
-//)
-//
-//const (
-//	host     = "localhost"
-//	port     = 5432
-//	user     = "postgres"
-//	password = "docker"
-//	dbname   = "todo"
-//)
-//
-//type ToDo struct {
-//	UserID      int       `json:"user_id,omitempty" db:"user_id"`
-//	ID          int       `json:"id,omitempty" db:"todo_id"`
-//	Title       string    `json:"title, omitempty" db:"title"`
-//	Description string    `json:"description,omitempty" db:"description"`
-//	Deadline    time.Time `json:"deadline,omitempty" db:"deadline"`
-//	CreatedAt   time.Time `json:"created_at,omitempty" db:"created_at"`
-//	Done        bool      `json:"done" db:"done"`
-//}
-//
-//func dbCon() (db *sqlx.DB) {
-//	// Construct database connection string
-//	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-//		"password=%s dbname=%s sslmode=disable",
-//		host, port, user, password, dbname)
-//
-//	db, err := sqlx.Connect("postgres", psqlInfo)
-//	if err != nil {
-//		fmt.Println(err)
-//	}
-//	return db
-//}
-//
+import (
+	_ "github.com/lib/pq"
+)
+
 //func getTodos(w http.ResponseWriter, r *http.Request) {
 //	//TODO: Authenticate
 //
@@ -67,27 +24,6 @@ package todo
 //	w.Write([]byte(marshalled))
 //}
 //
-//func getTodo(w http.ResponseWriter, r *http.Request) {
-//	//TODO: Authenticate
-//	pathParams := mux.Vars(r)
-//	rID := pathParams["todo_id"]
-//
-//	// Retrieve from database
-//	db := dbCon()
-//	var td []ToDo
-//	sqlQuery := fmt.Sprintf("SELECT * FROM todo WHERE todo_id=%s", rID)
-//	err := db.Select(&td, sqlQuery)
-//	if err != nil {
-//		fmt.Println(err)
-//	}
-//	// Write response
-//	w.Header().Set("Content-Type", "application/json")
-//	w.WriteHeader(http.StatusOK)
-//
-//	// TODO: Check for error when marshaling
-//	marshalled, err := json.Marshal(td[0])
-//	w.Write([]byte(marshalled))
-//}
 //
 //func createTodo(w http.ResponseWriter, r *http.Request) {
 //	reqBody, _ := ioutil.ReadAll(r.Body)

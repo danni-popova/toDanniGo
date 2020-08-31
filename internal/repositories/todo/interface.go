@@ -5,5 +5,5 @@ type Repository interface {
 	Get(id int) (td ToDo, err error)
 	List() (td []ToDo, err error)
 	Update(otd ToDo) (ntd ToDo, err error)
-	Delete(id string) error
+	Delete(id int) error
 }

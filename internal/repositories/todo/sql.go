@@ -58,7 +58,7 @@ func (r *repository) Update(otd ToDo) (ntd ToDo, err error) {
 	panic("implement me")
 }
 
-func (r *repository) Delete(id string) error {
+func (r *repository) Delete(id int) error {
 	_, err := r.db.Query("DELETE FROM todo WHERE todo_id=$1", id)
 	if err != nil {
 		return err

@@ -12,7 +12,6 @@ import (
 )
 
 func main() {
-
 	// Setup database
 	db, err := sql.NewFromEnv()
 	if err != nil {
@@ -26,6 +25,10 @@ func main() {
 
 	// Router
 	r := mux.NewRouter()
+	r.HandleFunc("/", svc.CreateHttp).Methods(http.MethodPost)
 	r.HandleFunc("/{id}", svc.GetHttp).Methods(http.MethodGet)
+	r.HandleFunc("/", svc.ListHttp).Methods(http.MethodGet)
+	r.HandleFunc("/{id}", svc.UpdateHttp).Methods(http.MethodPatch)
+	r.HandleFunc("/{id}", svc.DeleteHttp).Methods(http.MethodDelete)
 	log.Fatal(http.ListenAndServe(":8080", r))
 }

@@ -21,6 +21,14 @@ type Service interface {
 	// Delete a todanni identified by the given ID.
 	Delete(context.Context, *DeleteRequest) error
 
-	// Delete a todanni identified by the given ID.
+	// Before I figure out how to refactor these:
 	GetHttp(w http.ResponseWriter, r *http.Request)
+
+	ListHttp(w http.ResponseWriter, r *http.Request)
+
+	CreateHttp(w http.ResponseWriter, r *http.Request)
+
+	UpdateHttp(w http.ResponseWriter, r *http.Request)
+
+	DeleteHttp(w http.ResponseWriter, r *http.Request)
 }

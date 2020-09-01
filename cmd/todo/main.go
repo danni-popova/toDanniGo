@@ -23,7 +23,7 @@ func main() {
 	var svc todo.Service
 	svc = todo.NewService(todo2.NewRepository(db))
 
-	// Router
+	// Setup router
 	r := mux.NewRouter()
 	r.HandleFunc("/", svc.CreateHttp).Methods(http.MethodPost)
 	r.HandleFunc("/{id}", svc.GetHttp).Methods(http.MethodGet)

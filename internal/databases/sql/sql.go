@@ -5,6 +5,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+// TODO: refactor to use environment variables
 const (
 	host     = "localhost"
 	port     = 5432

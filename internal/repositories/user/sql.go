@@ -3,6 +3,7 @@ package user
 import (
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+
 	"time"
 )
 

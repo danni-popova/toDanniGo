@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+
+	"github.com/danni-popova/todannigo/internal/databases/sql"
+	todoRepo "github.com/danni-popova/todannigo/internal/repositories/todo"
+	"github.com/danni-popova/todannigo/internal/services/todo"
 	"github.com/gorilla/mux"
-	"github.com/todannigo/internal/databases/sql"
-	todo2 "github.com/todannigo/internal/repositories/todo"
-	"github.com/todannigo/internal/services/todo"
+
 	"log"
 	"net/http"
 	"os"
@@ -21,7 +23,7 @@ func main() {
 
 	// Setup the service
 	var svc todo.Service
-	svc = todo.NewService(todo2.NewRepository(db))
+	svc = todo.NewService(todoRepo.NewRepository(db))
 
 	// Setup router
 	r := mux.NewRouter()

@@ -3,11 +3,14 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"github.com/auth0/go-jwt-middleware"
+
+	jwtmiddleware "github.com/auth0/go-jwt-middleware"
+
+	"net/http"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
-	"net/http"
 )
 
 type Jwks struct {

@@ -1,9 +1,10 @@
 package todo
 
 import (
+	"time"
+
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-	"time"
 )
 
 type repository struct {

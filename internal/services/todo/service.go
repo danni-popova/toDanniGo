@@ -184,22 +184,3 @@ func (s *service) Get(ctx context.Context, req *GetRequest) (*Response, error) {
 
 	return &rtd, nil
 }
-func (s *service) List(ctx context.Context, req *ListRequest) (*ListResponse, error) {
-	var resp ListResponse
-
-	return &resp, nil
-}
-func (s *service) Create(ctx context.Context, req *CreateRequest) (*Response, error) {
-	var resp Response
-
-	return &resp, nil
-}
-func (s *service) Update(ctx context.Context, req *UpdateRequest) (*Response, error) {
-	var resp Response
-
-	return &resp, nil
-}
-func (s *service) Delete(ctx context.Context, req *DeleteRequest) error {
-
-	return nil
-}

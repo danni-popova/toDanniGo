@@ -8,6 +8,7 @@ CREATE DATABASE todo;
 CREATE TABLE registered_user(
     user_id     serial          PRIMARY KEY,
     email       varchar(50)     NOT NULL UNIQUE,
+    password    varchar(100)    NOT NULL,
     first_name  varchar(100)    NOT NULL,
     last_name   varchar(100)    NOT NULL,
     created_at  timestamp       default current_timestamp
@@ -31,10 +32,10 @@ CREATE TABLE todo_order(
 );
 
 -- Insert test user values
-INSERT INTO registered_user(email, first_name, last_name)
-VALUES ('test1@mail.com', 'Test', 'Test'),
-       ('test2@mail.com', 'Test', 'Test'),
-       ('test3@mail.com', 'Test', 'Test');
+INSERT INTO registered_user(email, first_name, last_name, password)
+VALUES ('test1@mail.com', 'Test', 'Test', 'password'),
+       ('test2@mail.com', 'Test', 'Test', 'password'),
+       ('test3@mail.com', 'Test', 'Test', 'password');
 
 -- Insert test todo values
 INSERT INTO todo(user_id, title, description, deadline)

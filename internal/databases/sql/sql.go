@@ -15,6 +15,7 @@ const (
 	dbname   = "todo"
 )
 
+// Open - creates a connection to the database
 func Open() (*sqlx.DB, error) {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",

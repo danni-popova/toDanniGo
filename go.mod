@@ -8,4 +8,5 @@ require (
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/lib/pq v1.8.0
 	github.com/rs/cors v1.7.0 // indirect
+	golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2
 )

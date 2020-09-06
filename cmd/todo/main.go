@@ -2,15 +2,14 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"net/http"
+	"os"
 
 	"github.com/danni-popova/todannigo/internal/databases/sql"
 	todoRepo "github.com/danni-popova/todannigo/internal/repositories/todo"
 	"github.com/danni-popova/todannigo/internal/services/todo"
 	"github.com/gorilla/mux"
-
-	"log"
-	"net/http"
-	"os"
 )
 
 func main() {

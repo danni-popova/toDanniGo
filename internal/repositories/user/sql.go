@@ -18,12 +18,13 @@ func NewRepository(db *sqlx.DB) Repository {
 }
 
 type User struct {
-	UserID    int       `json:"user_id" db:"user_id"`
-	Password  string    `json:"password" db:"password"`
-	Email     string    `json:"email" db:"email"`
-	FirstName string    `json:"first_name,omitempty" db:"first_name"`
-	LastName  string    `json:"last_name,omitempty" db:"last_name"`
-	CreatedAt time.Time `json:"created_at" db:"created_at"`
+	UserID         int       `json:"user_id" db:"user_id"`
+	Password       string    `json:"password" db:"password"`
+	Email          string    `json:"email" db:"email"`
+	FirstName      string    `json:"first_name,omitempty" db:"first_name"`
+	LastName       string    `json:"last_name,omitempty" db:"last_name"`
+	ProfilePicture string    `json:"profile_picture" db:"profile_picture"`
+	CreatedAt      time.Time `json:"created_at" db:"created_at"`
 }
 
 func (r *repository) Create(u User) error {
@@ -36,10 +37,11 @@ func (r *repository) Create(u User) error {
 }
 
 func (r *repository) Get(id int) (u User, err error) {
-	if err = r.db.Select(&u, "SELECT * FROM registered_user;"); err != nil {
+	var usr []User
+	if err = r.db.Select(&usr, "SELECT * FROM registered_user WHERE user_id=$1;", id); err != nil {
 		return u, err
 	}
-	return
+	return usr[0], nil
 }
 
 func (r *repository) GetPassword(email string) (password string, err error) {

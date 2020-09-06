@@ -28,5 +28,6 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/login", svc.Login).Methods(http.MethodPost)
 	r.HandleFunc("/register", svc.Register).Methods(http.MethodPost)
+	r.HandleFunc("/user/{id}", svc.GetUser).Methods(http.MethodGet)
 	log.Fatal(http.ListenAndServe(":8080", r))
 }

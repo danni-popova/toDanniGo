@@ -10,4 +10,7 @@ type Service interface {
 
 	// Register new user
 	Register(w http.ResponseWriter, r *http.Request)
+
+	// Get user details
+	GetUser(w http.ResponseWriter, r *http.Request)
 }

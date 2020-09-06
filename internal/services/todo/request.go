@@ -4,11 +4,11 @@ import "time"
 
 // Stick all of the request and response structures somewhere e.g here
 type GetRequest struct {
-	ID int `json:"id"`
+	ID int `json:"todo_id"`
 }
 
 type Response struct {
-	ID          int       `json:"id"`
+	ID          int       `json:"todo_id"`
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
 	Done        bool      `json:"done"`

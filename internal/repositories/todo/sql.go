@@ -19,7 +19,7 @@ func NewRepository(db *sqlx.DB) Repository {
 
 type ToDo struct {
 	UserID      int       `json:"user_id,omitempty" db:"user_id"`
-	ID          int       `json:"id,omitempty" db:"todo_id"`
+	ID          int       `json:"todo_id,omitempty" db:"todo_id"`
 	Title       string    `json:"title,omitempty" db:"title"`
 	Description string    `json:"description,omitempty" db:"description"`
 	Deadline    time.Time `json:"deadline,omitempty" db:"deadline"`

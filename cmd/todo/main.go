@@ -26,10 +26,11 @@ func main() {
 
 	// Setup router
 	r := mux.NewRouter()
-	r.HandleFunc("/", svc.CreateHttp).Methods(http.MethodPost)
-	r.HandleFunc("/{id}", svc.GetHttp).Methods(http.MethodGet)
-	r.HandleFunc("/", svc.ListHttp).Methods(http.MethodGet)
-	r.HandleFunc("/{id}", svc.UpdateHttp).Methods(http.MethodPatch)
-	r.HandleFunc("/{id}", svc.DeleteHttp).Methods(http.MethodDelete)
-	log.Fatal(http.ListenAndServe(":8080", r))
+	api := r.PathPrefix("/todo").Subrouter()
+	api.HandleFunc("/", svc.CreateHttp).Methods(http.MethodPost)
+	api.HandleFunc("/{id}", svc.GetHttp).Methods(http.MethodGet)
+	api.HandleFunc("/", svc.ListHttp).Methods(http.MethodGet)
+	api.HandleFunc("/{id}", svc.UpdateHttp).Methods(http.MethodPatch)
+	api.HandleFunc("/{id}", svc.DeleteHttp).Methods(http.MethodDelete)
+	log.Fatal(http.ListenAndServe(":8081", r))
 }

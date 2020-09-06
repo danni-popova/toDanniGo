@@ -49,7 +49,7 @@ func (s *service) GetHttp(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Failed to marshal response")
 	}
 
-	err = writeResponse(w, []byte(marshalled))
+	err = writeResponse(w, marshalled)
 	if err != nil {
 		fmt.Println("Failed to write response")
 	}

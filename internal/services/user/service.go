@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 
 	"github.com/danni-popova/todannigo/internal/repositories/user"
+	"github.com/gorilla/mux"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -21,6 +23,7 @@ func NewService(repo user.Repository) Service {
 }
 
 func (s *service) Login(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Login request received")
 	var lr LoginRequest
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -29,20 +32,17 @@ func (s *service) Login(w http.ResponseWriter, r *http.Request) {
 
 	err = json.Unmarshal(reqBody, &lr)
 	if err != nil {
-		fmt.Println("failed to unmarshal")
 		fmt.Println(err)
 	}
 
 	// TODO: validate request body contents
 	expPass, err := s.repo.GetPassword(lr.Email)
 	if err != nil {
-		fmt.Println("")
 		fmt.Println(err)
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(expPass), []byte(lr.Password))
 	if err != nil {
-		fmt.Println("")
 		fmt.Println(err)
 	}
 
@@ -61,6 +61,7 @@ func (s *service) Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *service) Register(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Register request received")
 	var user user.User
 
 	// Read new user details from request body
@@ -101,6 +102,39 @@ func (s *service) Register(w http.ResponseWriter, r *http.Request) {
 	err = writeResponse(w, marshalled)
 	if err != nil {
 		fmt.Println("Failed to write response")
+	}
+}
+
+func (s *service) GetUser(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("GetUser request received")
+	// Read ID from request
+	pathParams := mux.Vars(r)
+	id := pathParams["id"]
+	rID, err := strconv.Atoi(id)
+
+	// TODO: validate parameter
+	var usr user.User
+	usr, err = s.repo.Get(rID)
+	if err != nil {
+		fmt.Printf("Failed to query: %s", err)
+	}
+
+	// Map details
+	uD := UserDetails{
+		FirstName:      usr.FirstName,
+		LastName:       usr.LastName,
+		Email:          usr.Email,
+		ProfilePicture: usr.ProfilePicture,
+	}
+
+	marshalled, err := json.Marshal(uD)
+	if err != nil {
+		fmt.Printf("Failed to marshal: %s", err)
+	}
+
+	err = writeResponse(w, marshalled)
+	if err != nil {
+		fmt.Printf("Failed to write response: %s", err)
 	}
 }
 

@@ -6,12 +6,13 @@ CREATE DATABASE todo;
 
 -- Create users table
 CREATE TABLE registered_user(
-    user_id     serial          PRIMARY KEY,
-    email       varchar(50)     NOT NULL UNIQUE,
-    password    varchar(100)    NOT NULL,
-    first_name  varchar(100)    NOT NULL,
-    last_name   varchar(100)    NOT NULL,
-    created_at  timestamp       default current_timestamp
+    user_id         serial          PRIMARY KEY,
+    email           varchar(50)     NOT NULL UNIQUE,
+    password        varchar(100)    NOT NULL,
+    first_name      varchar(100)    NOT NULL,
+    last_name       varchar(100)    NOT NULL,
+    profile_picture varchar(500) default 'https://static01.nyt.com/images/2019/04/02/science/28SCI-ZIMMER1/28SCI-ZIMMER1-articleLarge.jpg?quality=75&auto=webp&disable=upscale',
+    created_at      timestamp       default current_timestamp
 );
 
 -- Create todos table
@@ -32,10 +33,10 @@ CREATE TABLE todo_order(
 );
 
 -- Insert test user values
-INSERT INTO registered_user(email, first_name, last_name, password)
-VALUES ('test1@mail.com', 'Test', 'Test', 'password'),
-       ('test2@mail.com', 'Test', 'Test', 'password'),
-       ('test3@mail.com', 'Test', 'Test', 'password');
+INSERT INTO registered_user(email, first_name, last_name, password, profile_picture)
+VALUES ('test1@mail.com', 'Test', 'Test', 'password', 'default'),
+       ('test2@mail.com', 'Test', 'Test', 'password', 'default'),
+       ('test3@mail.com', 'Test', 'Test', 'password', 'default');
 
 -- Insert test todo values
 INSERT INTO todo(user_id, title, description, deadline)

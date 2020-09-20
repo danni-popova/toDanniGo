@@ -40,3 +40,7 @@ type UpdateRequest struct {
 type DeleteRequest struct {
 	ID int `json:"id"`
 }
+
+type UnsuccessfulResponse struct {
+	Error string `json:"error"`
+}

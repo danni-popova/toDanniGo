@@ -27,15 +27,18 @@ type ToDo struct {
 	Done        bool      `json:"done" db:"done"`
 }
 
-func (r *repository) Create(ctd ToDo) error {
+func (r *repository) Create(ctd ToDo) (td ToDo, err error) {
 	// TODO(danni): Refactor later to return the created todo
-	if _, err := r.db.NamedQuery(`INSERT INTO todo(user_id, title, description, deadline)
+	result, err := r.db.NamedQuery(`INSERT INTO todo(user_id, title, description, deadline)
 										VALUES (:user_id, :title, :description, :deadline)
-										RETURNING todo_id;`, &ctd); err != nil {
-		return err
+										RETURNING *;`, &ctd)
+	if err != nil {
+		return td, err
 	}
 
-	return nil
+	result.Next()
+	err = result.StructScan(&td)
+	return td, err
 }
 
 func (r *repository) Get(id int) (td ToDo, err error) {

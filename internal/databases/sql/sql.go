@@ -4,13 +4,14 @@ import (
 	"fmt"
 
 	"github.com/jmoiron/sqlx"
+	log "github.com/sirupsen/logrus"
 )
 
 // TODO: refactor to use environment variables
 const (
-	host     = "localhost"
+	host     = "postgresql"
 	port     = 5432
-	user     = "postgres"
+	user     = "docker"
 	password = "docker"
 	dbname   = "todo"
 )
@@ -23,6 +24,7 @@ func Open() (*sqlx.DB, error) {
 
 	db, err := sqlx.Open("postgres", psqlInfo)
 	if err != nil {
+		log.Error(err)
 		return nil, err
 	}
 

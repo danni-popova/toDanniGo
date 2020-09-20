@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"strconv"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/danni-popova/todannigo/internal/repositories/user"
 	"github.com/gorilla/mux"
 	"golang.org/x/crypto/bcrypt"
@@ -27,23 +29,23 @@ func (s *service) Login(w http.ResponseWriter, r *http.Request) {
 	var lr LoginRequest
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		fmt.Println(err)
+		log.Error(err)
 	}
 
 	err = json.Unmarshal(reqBody, &lr)
 	if err != nil {
-		fmt.Println(err)
+		log.Error(err)
 	}
 
 	// TODO: validate request body contents
 	expPass, err := s.repo.GetPassword(lr.Email)
 	if err != nil {
-		fmt.Println(err)
+		log.Error(err)
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(expPass), []byte(lr.Password))
 	if err != nil {
-		fmt.Println(err)
+		log.Error(err)
 	}
 
 	// Create response to write
@@ -67,21 +69,20 @@ func (s *service) Register(w http.ResponseWriter, r *http.Request) {
 	// Read new user details from request body
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		fmt.Println(err)
+		log.Error(err)
 	}
 
 	// Unmarshall body
 	err = json.Unmarshal(reqBody, &user)
 	if err != nil {
-		fmt.Println(err)
+		log.Error(err)
 	}
 
 	//TODO: Validate user details
 
 	pass, err := bcrypt.GenerateFromPassword([]byte(user.Password), 14)
 	if err != nil {
-		fmt.Println("error generating from password")
-		fmt.Println(err)
+		log.Error(err)
 	}
 	user.Password = string(pass)
 
@@ -89,19 +90,18 @@ func (s *service) Register(w http.ResponseWriter, r *http.Request) {
 	// TODO: Convert email to lower case before inserting
 	err = s.repo.Create(user)
 	if err != nil {
-		fmt.Println("error creating user:")
-		fmt.Println(err)
+		log.Error(err)
 	}
 
 	response := LoginResponse{Token: "valid-token"}
 	marshalled, err := json.Marshal(response)
 	if err != nil {
-		fmt.Println("Failed to marshal response")
+		log.Error(err)
 	}
 
 	err = writeResponse(w, marshalled)
 	if err != nil {
-		fmt.Println("Failed to write response")
+		log.Error(err)
 	}
 }
 
@@ -116,7 +116,7 @@ func (s *service) GetUser(w http.ResponseWriter, r *http.Request) {
 	var usr user.User
 	usr, err = s.repo.Get(rID)
 	if err != nil {
-		fmt.Printf("Failed to query: %s", err)
+		log.Error(err)
 	}
 
 	// Map details
@@ -129,12 +129,12 @@ func (s *service) GetUser(w http.ResponseWriter, r *http.Request) {
 
 	marshalled, err := json.Marshal(uD)
 	if err != nil {
-		fmt.Printf("Failed to marshal: %s", err)
+		log.Error(err)
 	}
 
 	err = writeResponse(w, marshalled)
 	if err != nil {
-		fmt.Printf("Failed to write response: %s", err)
+		log.Error(err)
 	}
 }
 

@@ -6,19 +6,12 @@ ENV GO111MODULE=on \
     GOOS=linux \
     GOARCH=amd64
 
-# Move to working directory /build
+COPY . /build
+
 WORKDIR /build
 
-# Copy and download dependency using go mod
-COPY go.mod .
-COPY go.sum .
-RUN go mod download
-
-# Copy the code into the container
-COPY . .
-
 # Build the application
-RUN go build -o main .
+RUN go build -o main ./cmd/todo
 
 # Move to /dist directory as the place for resulting binary folder
 WORKDIR /dist
@@ -27,7 +20,7 @@ WORKDIR /dist
 RUN cp /build/main .
 
 # Export necessary port
-EXPOSE 3000
+EXPOSE 8081
 
 # Command to run when starting the container
 CMD ["/dist/main"]

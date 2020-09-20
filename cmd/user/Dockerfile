@@ -1,9 +1,26 @@
-FROM golang:latest
+FROM golang:alpine
 
-RUN mkdir /tmp/app
-ADD ../.. /tmp/app
-WORKDIR /tmp/app
+# Set necessary environmet variables needed for our image
+ENV GO111MODULE=on \
+    CGO_ENABLED=0 \
+    GOOS=linux \
+    GOARCH=amd64
 
-RUN go build -o main .
-CMD ["/tmp/app/main"]
-EXPOSE 3000
+COPY . /build
+
+WORKDIR /build
+
+# Build the application
+RUN go build -o main ./cmd/user
+
+# Move to /dist directory as the place for resulting binary folder
+WORKDIR /dist
+
+# Copy binary from build to main folder
+RUN cp /build/main .
+
+# Export necessary port
+EXPOSE 8080
+
+# Command to run when starting the container
+CMD ["/dist/main"]

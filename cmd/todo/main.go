@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"net/http"
 	"os"
 
@@ -10,13 +8,15 @@ import (
 	todoRepo "github.com/danni-popova/todannigo/internal/repositories/todo"
 	"github.com/danni-popova/todannigo/internal/services/todo"
 	"github.com/gorilla/mux"
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {
 	// Setup database
 	db, err := sql.NewFromEnv()
 	if err != nil {
-		fmt.Println(err)
+		//fmt.Println(err)
+		log.Error(err)
 		os.Exit(1)
 	}
 

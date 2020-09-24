@@ -96,7 +96,6 @@ func (s *service) CreateHttp(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var ctd todo.ToDo
-
 	ctd, err = s.repo.Create(td)
 	// Return an error and exit
 	if err != nil {

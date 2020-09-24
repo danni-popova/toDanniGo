@@ -14,7 +14,6 @@ services:
       - ./build/database/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - default
-      - outside
 
   todo:
     build:
@@ -23,6 +22,8 @@ services:
     container_name: todo-service
     ports:
     - "8081:8081"
+    networks:
+      - default
 
   user:
     build:
@@ -31,9 +32,11 @@ services:
     container_name: user-service
     ports:
     - "8080:8080"
+    networks:
+      - default
 
 volumes:
   postgres-data:
 
 networks:
-  outside:
+  default:

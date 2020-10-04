@@ -23,7 +23,7 @@ func NewService(repo todo.Repository) Service {
 }
 
 func (s *service) GetHttp(w http.ResponseWriter, r *http.Request) {
-	log.Info("Get was called")
+	log.Info("GetByID was called")
 
 	var td todo.ToDo
 	pathParams := mux.Vars(r)

@@ -24,7 +24,6 @@ func NewService(repo todo.Repository) Service {
 
 func (s *service) GetHttp(w http.ResponseWriter, r *http.Request) {
 	log.Info("GetByID was called")
-
 	var td todo.ToDo
 	pathParams := mux.Vars(r)
 	rID := pathParams["id"]
@@ -59,7 +58,7 @@ func (s *service) GetHttp(w http.ResponseWriter, r *http.Request) {
 
 func (s *service) ListHttp(w http.ResponseWriter, r *http.Request) {
 	log.Info("List was called")
-
+	userID := r.Context().Value("user_id")
 	var td []todo.ToDo
 	td, err := s.repo.List()
 	// Return an error and exit

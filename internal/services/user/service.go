@@ -32,6 +32,20 @@ func NewService(repo user.Repository) Service {
 	}
 }
 
+// TODO: Find where to shove those so both the user service
+// and the middleware service can use it without copying
+type toDanniClaims struct {
+	jwt.StandardClaims
+
+	UserInfo userClaims `json:"user_info"`
+}
+
+type userClaims struct {
+	UserID         int    `json:"user_id"`
+	Email          string `json:"email"`
+	ProfilePicture string `json:"profile_picture"`
+}
+
 func (s *service) Register(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Register request received")
 	var usr user.User
@@ -164,12 +178,18 @@ func writeResponse(w http.ResponseWriter, r []byte) error {
 
 func generateToken(u user.User) string {
 	// Create the Claims
-	claims := &jwt.MapClaims{
-		"iss":             tokenIssuer,
-		"exp":             time.Now().Add(time.Hour * 1).Unix(),
-		"user_id":         u.UserID,
-		"email":           u.Email,
-		"profile_picture": u.ProfilePicture,
+	userInfoClaims := userClaims{
+		UserID:         u.UserID,
+		Email:          u.Email,
+		ProfilePicture: u.ProfilePicture,
+	}
+
+	claims := toDanniClaims{
+		StandardClaims: jwt.StandardClaims{
+			Issuer:    "todanni-user-service",
+			ExpiresAt: time.Now().Add(time.Hour * 1).Unix(),
+		},
+		UserInfo: userInfoClaims,
 	}
 
 	// Generate the Token

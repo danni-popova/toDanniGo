@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/danni-popova/todannigo/internal/services/middleware"
+
 	"github.com/danni-popova/todannigo/internal/databases/sql"
 	todoRepo "github.com/danni-popova/todannigo/internal/repositories/todo"
 	"github.com/danni-popova/todannigo/internal/services/todo"
@@ -25,11 +27,10 @@ func main() {
 	svc = todo.NewService(todoRepo.NewRepository(db))
 
 	// Setup the middleware
-	//amw := auth.AuthenticationMiddleware{}
 
 	// Setup router
 	r := mux.NewRouter()
-	//r.Use(amw.Middleware)
+	r.Use(middleware.Middleware)
 
 	api := r.PathPrefix("/todo").Subrouter()
 	api.HandleFunc("/", svc.CreateHttp).Methods(http.MethodPost)

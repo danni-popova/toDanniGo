@@ -22,15 +22,60 @@ func NewService(repo todo.Repository) Service {
 	}
 }
 
+func (s *service) CreateHttp(w http.ResponseWriter, r *http.Request) {
+
+	var td todo.ToDo
+
+	// Read request body and save into a todo
+	reqBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Error(err)
+	}
+
+	err = json.Unmarshal(reqBody, &td)
+	if err != nil {
+		log.Error(err)
+	}
+
+	// Add the user ID from the request context
+	userID := r.Context().Value("user_id")
+	td.UserID = userID.(int)
+
+	var ctd todo.ToDo
+	ctd, err = s.repo.Create(td)
+	// Return an error and exit
+	if err != nil {
+		writeFailure(w, err.Error())
+		return
+	}
+
+	// IDK if this is the best/worst way to do it
+	rtd := Response{
+		ID:          ctd.ID,
+		Title:       ctd.Title,
+		Description: ctd.Description,
+		Deadline:    ctd.Deadline,
+		Done:        ctd.Done,
+	}
+	marshalled, err := json.Marshal(rtd)
+	if err != nil {
+		log.Error(err)
+	}
+
+	err = writeSuccess(w, []byte(marshalled))
+	if err != nil {
+		log.Error(err)
+	}
+}
+
 func (s *service) GetHttp(w http.ResponseWriter, r *http.Request) {
-	log.Info("GetByID was called")
 	var td todo.ToDo
 	pathParams := mux.Vars(r)
-	rID := pathParams["id"]
+	reqToDoID := pathParams["id"]
+	i, err := strconv.Atoi(reqToDoID)
+	usrID := r.Context().Value("user_id")
 
-	// TODO: validate parameter because that screwed me the first time
-	i, err := strconv.Atoi(rID)
-	td, err = s.repo.Get(i)
+	td, err = s.repo.Get(i, usrID.(int))
 	// Return an error and exit
 	if err != nil {
 		writeFailure(w, err.Error())
@@ -58,7 +103,7 @@ func (s *service) GetHttp(w http.ResponseWriter, r *http.Request) {
 
 func (s *service) ListHttp(w http.ResponseWriter, r *http.Request) {
 	log.Info("List was called")
-	userID := r.Context().Value("user_id")
+	userID :=
 	var td []todo.ToDo
 	td, err := s.repo.List()
 	// Return an error and exit
@@ -69,48 +114,6 @@ func (s *service) ListHttp(w http.ResponseWriter, r *http.Request) {
 
 	// Marshal response
 	marshalled, err := json.Marshal(td)
-	if err != nil {
-		log.Error(err)
-	}
-
-	err = writeSuccess(w, []byte(marshalled))
-	if err != nil {
-		log.Error(err)
-	}
-}
-
-func (s *service) CreateHttp(w http.ResponseWriter, r *http.Request) {
-	// TODO: validate parameter because that screwed me the first time
-	log.Info("Create was called")
-
-	var td todo.ToDo
-	reqBody, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		log.Error(err)
-	}
-
-	err = json.Unmarshal(reqBody, &td)
-	if err != nil {
-		log.Error(err)
-	}
-
-	var ctd todo.ToDo
-	ctd, err = s.repo.Create(td)
-	// Return an error and exit
-	if err != nil {
-		writeFailure(w, err.Error())
-		return
-	}
-
-	// IDK if this is the best/worst way to do it
-	rtd := Response{
-		ID:          ctd.ID,
-		Title:       ctd.Title,
-		Description: ctd.Description,
-		Deadline:    ctd.Deadline,
-		Done:        ctd.Done,
-	}
-	marshalled, err := json.Marshal(rtd)
 	if err != nil {
 		log.Error(err)
 	}

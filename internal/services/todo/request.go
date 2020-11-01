@@ -6,16 +6,16 @@ import (
 
 // Stick all of the request and response structures somewhere e.g here
 type GetRequest struct {
-	ID int `json:"ID"`
+	ID int `json:"id"`
 }
 
 type Response struct {
-	ID          int       `json:"ID"`
-	Title       string    `json:"Title"`
-	Description string    `json:"Description"`
-	Deadline    string    `json:"Deadline"`
-	Done        bool      `json:"Done"`
-	CreatedAt   time.Time `json:"CreatedAt"`
+	ID          int       `json:"id"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	Deadline    string    `json:"deadline"`
+	Done        bool      `json:"done"`
+	CreatedAt   time.Time `json:"createdAt"`
 }
 
 type ListRequest struct {
@@ -27,22 +27,22 @@ type ListResponse struct {
 }
 
 type CreateRequest struct {
-	Title       string `json:"Title"`
-	Description string `json:"Description"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
 	Deadline    time.Time
 }
 
 type UpdateRequest struct {
-	Title       string    `json:"Title"`
-	Description string    `json:"Description"`
-	Deadline    time.Time `json:"Deadline"`
-	Done        bool      `json:"Done"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	Deadline    time.Time `json:"deadline"`
+	Done        bool      `json:"done"`
 }
 
 type DeleteRequest struct {
-	ID int `json:"ID"`
+	ID int `json:"id"`
 }
 
 type UnsuccessfulResponse struct {
-	Error string `json:"Error"`
+	Error string `json:"error"`
 }

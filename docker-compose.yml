@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  postgresql:
+    image: postgres
+    container_name: postgress-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./build/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - default
+
+  todo:
+    build:
+      context: .
+      dockerfile: ./cmd/todo/Dockerfile
+    container_name: todo-service
+    ports:
+    - "8081:8081"
+    networks:
+      - default
+
+  user:
+    build:
+      context: .
+      dockerfile: ./cmd/user/Dockerfile
+    container_name: user-service
+    ports:
+    - "8080:8080"
+    networks:
+      - default
+
+volumes:
+  postgres-data:
+
+networks:
+  default:

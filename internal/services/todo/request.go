@@ -1,6 +1,8 @@
 package todo
 
-import "time"
+import (
+	"time"
+)
 
 // Stick all of the request and response structures somewhere e.g here
 type GetRequest struct {
@@ -11,9 +13,9 @@ type Response struct {
 	ID          int       `json:"id"`
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
+	Deadline    string    `json:"deadline"`
 	Done        bool      `json:"done"`
-	Deadline    time.Time `json:"deadline"`
-	CreatedAt   time.Time `json:"created_at"`
+	CreatedAt   time.Time `json:"createdAt"`
 }
 
 type ListRequest struct {
@@ -39,4 +41,8 @@ type UpdateRequest struct {
 
 type DeleteRequest struct {
 	ID int `json:"id"`
+}
+
+type UnsuccessfulResponse struct {
+	Error string `json:"error"`
 }

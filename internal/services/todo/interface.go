@@ -5,7 +5,7 @@ import (
 )
 
 type Service interface {
-	// Get the details for a single todanni identified by the given ID.
+	// GetByID the details for a single todanni identified by the given ID.
 	GetHttp(w http.ResponseWriter, r *http.Request)
 
 	// List all todannis.

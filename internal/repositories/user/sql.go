@@ -1,6 +1,7 @@
 package user
 
 import (
+	"database/sql"
 	"errors"
 	"time"
 
@@ -19,13 +20,15 @@ func NewRepository(db *sqlx.DB) Repository {
 }
 
 type User struct {
-	UserID         int       `json:"ID" db:"id"`
-	Password       string    `json:"Password" db:"password"`
-	Email          string    `json:"Email" db:"email"`
-	ProfilePicture string    `json:"ProfilePicture" db:"profile_picture"`
-	CreatedAt      time.Time `json:"CreatedAt" db:"created_at"`
-	FirstName      string    `json:"FirstName" db:"first_name"`
-	LastName       string    `json:"LastName" db:"last_name"`
+	UserID         int            `json:"id" db:"id"`
+	Password       string         `json:"password" db:"password"`
+	Email          string         `json:"email" db:"email"`
+	ProfilePicture string         `json:"profilePicture" db:"profile_picture"`
+	CreatedAt      time.Time      `json:"createdAt" db:"created_at"`
+	UpdatedAt      sql.NullString `json:"updatedAt" db:"updated_at"`
+	DeletedAt      sql.NullString `json:"deletedAt" db:"deleted_at"`
+	FirstName      string         `json:"firstName" db:"first_name"`
+	LastName       string         `json:"lastName" db:"last_name"`
 }
 
 func (r *repository) Create(u User) error {

@@ -10,11 +10,25 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+type HTTPReqInfo struct {
+	// GET etc.
+	method    string
+	uri       string
+	referer   string
+	userAgent string
+	body      string
+}
+
 func LoggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Do stuff here
-		log.Println(r.RequestURI)
-		// Call the next handler, which can be another middleware in the chain, or the final handler.
+		reqInfo := &HTTPReqInfo{
+			method:    r.Method,
+			uri:       r.URL.String(),
+			referer:   r.Header.Get("Referer"),
+			userAgent: r.Header.Get("User-Agent"),
+		}
+
+		log.Println(reqInfo)
 		next.ServeHTTP(w, r)
 	})
 }

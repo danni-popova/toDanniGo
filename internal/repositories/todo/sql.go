@@ -1,6 +1,7 @@
 package todo
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -18,15 +19,15 @@ func NewRepository(db *sqlx.DB) Repository {
 }
 
 type ToDo struct {
-	UserID      int       `json:"UserID" db:"user_id"`
-	ID          int       `json:"ID"     db:"id"`
-	Title       string    `json:"Title"  db:"title"`
-	Description string    `json:"Description,omitempty" db:"description"`
-	Done        bool      `json:"Done"   db:"done"`
-	Deadline    time.Time `json:"Deadline,omitempty" db:"deadline"`
-	CreatedAt   time.Time `json:"CreatedAt,omitempty" db:"created_at"`
-	UpdatedAt   time.Time `json:"UpdatedAt,omitempty" db:"updated_at"`
-	DeletedAt   time.Time `json:"DeletedAt,omitempty" db:"deleted_at"`
+	UserID      int            `json:"userID" db:"user_id"`
+	ID          int            `json:"id"     db:"id"`
+	Title       string         `json:"title"  db:"title"`
+	Description string         `json:"description,omitempty" db:"description"`
+	Done        bool           `json:"done"   db:"done"`
+	CreatedAt   time.Time      `json:"createdAt,omitempty" db:"created_at"`
+	Deadline    sql.NullString `json:"deadline,omitempty" db:"deadline"`
+	UpdatedAt   sql.NullString `json:"updatedAt" db:"updated_at"`
+	DeletedAt   sql.NullString `json:"deletedAt" db:"deleted_at"`
 }
 
 func (r *repository) Create(ctd ToDo) (td ToDo, err error) {

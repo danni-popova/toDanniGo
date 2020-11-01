@@ -1,19 +1,21 @@
 package todo
 
-import "time"
+import (
+	"time"
+)
 
 // Stick all of the request and response structures somewhere e.g here
 type GetRequest struct {
-	ID int `json:"todo_id"`
+	ID int `json:"ID"`
 }
 
 type Response struct {
-	ID          int       `json:"todo_id"`
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	Done        bool      `json:"done"`
-	Deadline    time.Time `json:"deadline"`
-	CreatedAt   time.Time `json:"created_at"`
+	ID          int       `json:"ID"`
+	Title       string    `json:"Title"`
+	Description string    `json:"Description"`
+	Deadline    string    `json:"Deadline"`
+	Done        bool      `json:"Done"`
+	CreatedAt   time.Time `json:"CreatedAt"`
 }
 
 type ListRequest struct {
@@ -25,22 +27,22 @@ type ListResponse struct {
 }
 
 type CreateRequest struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
+	Title       string `json:"Title"`
+	Description string `json:"Description"`
 	Deadline    time.Time
 }
 
 type UpdateRequest struct {
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	Deadline    time.Time `json:"deadline"`
-	Done        bool      `json:"done"`
+	Title       string    `json:"Title"`
+	Description string    `json:"Description"`
+	Deadline    time.Time `json:"Deadline"`
+	Done        bool      `json:"Done"`
 }
 
 type DeleteRequest struct {
-	ID int `json:"id"`
+	ID int `json:"ID"`
 }
 
 type UnsuccessfulResponse struct {
-	Error string `json:"error"`
+	Error string `json:"Error"`
 }

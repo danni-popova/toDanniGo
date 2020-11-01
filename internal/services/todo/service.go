@@ -52,8 +52,9 @@ func (s *service) CreateHttp(w http.ResponseWriter, r *http.Request) {
 		ID:          ctd.ID,
 		Title:       ctd.Title,
 		Description: ctd.Description,
-		Deadline:    ctd.Deadline,
+		Deadline:    ctd.Deadline.String,
 		Done:        ctd.Done,
+		CreatedAt:   ctd.CreatedAt,
 	}
 	marshalled, err := json.Marshal(rtd)
 	if err != nil {
@@ -85,8 +86,9 @@ func (s *service) GetHttp(w http.ResponseWriter, r *http.Request) {
 		ID:          td.ID,
 		Title:       td.Title,
 		Description: td.Description,
-		Deadline:    td.Deadline,
+		Deadline:    td.Deadline.String,
 		Done:        td.Done,
+		CreatedAt:   td.CreatedAt,
 	}
 	marshalled, err := json.Marshal(rtd)
 	if err != nil {

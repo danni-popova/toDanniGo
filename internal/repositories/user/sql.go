@@ -19,19 +19,19 @@ func NewRepository(db *sqlx.DB) Repository {
 }
 
 type User struct {
-	UserID         int       `json:"user_id" db:"user_id"`
-	Password       string    `json:"password" db:"password"`
-	Email          string    `json:"email" db:"email"`
-	ProfilePicture string    `json:"profile_picture" db:"profile_picture"`
-	CreatedAt      time.Time `json:"created_at" db:"created_at"`
-	FirstName      string    `json:"first_name,omitempty" db:"first_name"`
-	LastName       string    `json:"last_name,omitempty" db:"last_name"`
+	UserID         int       `json:"ID" db:"id"`
+	Password       string    `json:"Password" db:"password"`
+	Email          string    `json:"Email" db:"email"`
+	ProfilePicture string    `json:"ProfilePicture" db:"profile_picture"`
+	CreatedAt      time.Time `json:"CreatedAt" db:"created_at"`
+	FirstName      string    `json:"FirstName" db:"first_name"`
+	LastName       string    `json:"LastName" db:"last_name"`
 }
 
 func (r *repository) Create(u User) error {
 	if _, err := r.db.NamedQuery(`INSERT INTO registered_user(first_name, last_name, email, password)
 										VALUES (:first_name, :last_name, :email, :password)
-										RETURNING user_id;`, &u); err != nil {
+										RETURNING id;`, &u); err != nil {
 		return err
 	}
 	return nil
@@ -39,7 +39,7 @@ func (r *repository) Create(u User) error {
 
 func (r *repository) GetByID(id int) (u User, err error) {
 	var usr []User
-	if err = r.db.Select(&usr, "SELECT * FROM registered_user WHERE user_id=$1;", id); err != nil {
+	if err = r.db.Select(&usr, "SELECT * FROM registered_user WHERE id=$1;", id); err != nil {
 		return u, err
 	}
 

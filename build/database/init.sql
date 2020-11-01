@@ -18,7 +18,7 @@ CREATE TABLE registered_user(
 -- Create todos table
 CREATE TABLE todo(
     todo_id     serial PRIMARY KEY,
-    user_id     serial REFERENCES registered_user(user_id),
+    user_id     serial REFERENCES registered_user(id),
     title       varchar(100) NOT NULL,
     description text,
     created_at  timestamp default current_timestamp,
@@ -28,7 +28,7 @@ CREATE TABLE todo(
 
 -- Create the table to store the priority of the todos
 CREATE TABLE todo_order(
-    user_id serial references registered_user(user_id),
+    user_id serial references registered_user(id),
     todos text []
 );
 

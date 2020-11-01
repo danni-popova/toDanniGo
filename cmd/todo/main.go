@@ -31,6 +31,7 @@ func main() {
 	// Setup router
 	r := mux.NewRouter()
 	r.Use(middleware.Middleware)
+	r.Use(middleware.LoggingMiddleware)
 
 	api := r.PathPrefix("/todo").Subrouter()
 	api.HandleFunc("/", svc.CreateHttp).Methods(http.MethodPost)

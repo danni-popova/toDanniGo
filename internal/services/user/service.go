@@ -8,18 +8,13 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/danni-popova/todannigo/internal/services/claims"
+
 	"github.com/danni-popova/todannigo/internal/repositories/user"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
-)
-
-const (
-	// Store this as environment variable in the future
-	hmacSampleSecret = "the-todanni-secret"
-	// This isn't used anywhere... yet
-	tokenIssuer = "todanni-user-service"
 )
 
 type service struct {
@@ -30,20 +25,6 @@ func NewService(repo user.Repository) Service {
 	return &service{
 		repo: repo,
 	}
-}
-
-// TODO: Find where to shove those so both the user service
-// and the middleware service can use it without copying
-type toDanniClaims struct {
-	jwt.StandardClaims
-
-	UserInfo userClaims `json:"user_info"`
-}
-
-type userClaims struct {
-	UserID         int    `json:"user_id"`
-	Email          string `json:"email"`
-	ProfilePicture string `json:"profile_picture"`
 }
 
 func (s *service) Register(w http.ResponseWriter, r *http.Request) {
@@ -94,6 +75,7 @@ func (s *service) Register(w http.ResponseWriter, r *http.Request) {
 
 func (s *service) Login(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Login request received")
+
 	var lr LoginRequest
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -105,10 +87,17 @@ func (s *service) Login(w http.ResponseWriter, r *http.Request) {
 		log.Error(err)
 	}
 
-	// TODO: validate request body contents
+	fmt.Println(lr)
+
+	if lr.Email == "" || lr.Password == "" {
+		writeFailure(w, "password and email cannot be blank")
+	}
+
 	usr, err := s.repo.GetByEmail(lr.Email)
 	if err != nil {
 		log.Error(err)
+		writeFailure(w, "incorrect username or password")
+		return
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(usr.Password), []byte(lr.Password))
@@ -178,13 +167,13 @@ func writeResponse(w http.ResponseWriter, r []byte) error {
 
 func generateToken(u user.User) string {
 	// Create the Claims
-	userInfoClaims := userClaims{
+	userInfoClaims := claims.UserClaims{
 		UserID:         u.UserID,
 		Email:          u.Email,
 		ProfilePicture: u.ProfilePicture,
 	}
 
-	claims := toDanniClaims{
+	clms := claims.ToDanniClaims{
 		StandardClaims: jwt.StandardClaims{
 			Issuer:    "todanni-user-service",
 			ExpiresAt: time.Now().Add(time.Hour * 1).Unix(),
@@ -193,10 +182,23 @@ func generateToken(u user.User) string {
 	}
 
 	// Generate the Token
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	ss, err := token.SignedString([]byte(hmacSampleSecret))
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, clms)
+	ss, err := token.SignedString([]byte(claims.HmacSampleSecret))
 	if err != nil {
 		log.Error(err)
 	}
 	return ss
+}
+
+func writeFailure(w http.ResponseWriter, e string) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusInternalServerError)
+
+	errMessage := UnsuccessfulResponse{Error: e}
+	marshalled, err := json.Marshal(errMessage)
+	if err != nil {
+		log.Error(err)
+	}
+	_, err = w.Write(marshalled)
+	return err
 }

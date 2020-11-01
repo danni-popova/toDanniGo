@@ -22,3 +22,7 @@ type Details struct {
 	LastName       string `json:"last_name" db:"last_name"`
 	ProfilePicture string `json:"profile_picture" db:"profile_picture"`
 }
+
+type UnsuccessfulResponse struct {
+	Error string `json:"error"`
+}

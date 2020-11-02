@@ -1,16 +1,13 @@
-package activity
+package main
 
 import (
 	"net/http"
 	"os"
 
-	"github.com/danni-popova/todannigo/internal/services/activity"
-
 	"github.com/danni-popova/todannigo/internal/databases/sql"
-	"github.com/danni-popova/todannigo/internal/services/middleware"
-
 	activityRepo "github.com/danni-popova/todannigo/internal/repositories/activity"
-
+	"github.com/danni-popova/todannigo/internal/services/activity"
+	"github.com/danni-popova/todannigo/internal/services/middleware"
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 )
@@ -19,7 +16,6 @@ func main() {
 	// Setup database
 	db, err := sql.NewFromEnv()
 	if err != nil {
-		//fmt.Println(err)
 		log.Error(err)
 		os.Exit(1)
 	}
@@ -27,8 +23,6 @@ func main() {
 	// Setup the service
 	var svc activity.Service
 	svc = activity.NewService(activityRepo.NewRepository(db))
-
-	// Setup the middleware
 
 	// Setup router
 	r := mux.NewRouter()

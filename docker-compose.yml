@@ -15,6 +15,16 @@ services:
     networks:
       - default
 
+  user:
+    build:
+      context: .
+      dockerfile: ./cmd/user/Dockerfile
+    container_name: user-service
+    ports:
+      - "8080:8080"
+    networks:
+      - default
+
   todo:
     build:
       context: .
@@ -25,13 +35,13 @@ services:
     networks:
       - default
 
-  user:
+  activity:
     build:
       context: .
-      dockerfile: ./cmd/user/Dockerfile
-    container_name: user-service
+      dockerfile: ./cmd/activity/Dockerfile
+    container_name: activity-service
     ports:
-    - "8080:8080"
+      - "8082:8082"
     networks:
       - default
 

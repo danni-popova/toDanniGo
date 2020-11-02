@@ -2,11 +2,11 @@ package activity
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"net/http"
 
-	log "github.com/sirupsen/logrus"
-
 	"github.com/danni-popova/todannigo/internal/repositories/activity"
+	log "github.com/sirupsen/logrus"
 )
 
 type service struct {
@@ -19,7 +19,7 @@ func NewService(repo activity.Repository) Service {
 	}
 }
 
-func (s service) ListActions(w http.ResponseWriter, r *http.Request) {
+func (s *service) ListActions(w http.ResponseWriter, r *http.Request) {
 	// Retrieve user from request token
 	userID := r.Context().Value("user_id")
 
@@ -44,8 +44,28 @@ func (s service) ListActions(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s service) RecordAction(w http.ResponseWriter, r *http.Request) {
+func (s *service) RecordAction(w http.ResponseWriter, r *http.Request) {
+	// Retrieve user from request token
 	userID := r.Context().Value("user_id")
+
+	reqBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Error(err)
+	}
+	log.Info(reqBody)
+
+	var action activity.Action
+	err = json.Unmarshal(reqBody, &action)
+	if err != nil {
+		log.Error(err)
+	}
+	action.UserID = userID.(int)
+
+	err = s.repo.Add(action)
+	if err != nil {
+		log.Error(err)
+	}
+
 }
 
 func writeSuccess(w http.ResponseWriter, r []byte) error {

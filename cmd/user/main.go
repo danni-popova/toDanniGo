@@ -6,10 +6,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/danni-popova/todannigo/internal/services/middleware"
-
 	"github.com/danni-popova/todannigo/internal/databases/sql"
 	userRepo "github.com/danni-popova/todannigo/internal/repositories/user"
+	"github.com/danni-popova/todannigo/internal/services/middleware"
 	"github.com/danni-popova/todannigo/internal/services/user"
 	"github.com/gorilla/mux"
 )

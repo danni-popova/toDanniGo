@@ -4,10 +4,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/danni-popova/todannigo/internal/services/middleware"
-
 	"github.com/danni-popova/todannigo/internal/databases/sql"
 	todoRepo "github.com/danni-popova/todannigo/internal/repositories/todo"
+	"github.com/danni-popova/todannigo/internal/services/middleware"
 	"github.com/danni-popova/todannigo/internal/services/todo"
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
@@ -25,8 +24,6 @@ func main() {
 	// Setup the service
 	var svc todo.Service
 	svc = todo.NewService(todoRepo.NewRepository(db))
-
-	// Setup the middleware
 
 	// Setup router
 	r := mux.NewRouter()

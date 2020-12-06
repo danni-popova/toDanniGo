@@ -23,7 +23,7 @@ jobs:
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.GITHUB_TOKEN }}
         dockerfile: Dockerfile
-        workdir: /cmd/todo/
+        workdir: cmd/todo/
         context: .
         tags: latest
     - name: Deploy package to digitalocean

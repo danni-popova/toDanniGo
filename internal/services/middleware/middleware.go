@@ -38,8 +38,11 @@ func Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		token := r.Header.Get("Authorization")
 		splitToken := strings.Split(token, "Bearer ")
-		token = splitToken[1]
+		if len(splitToken) < 2 {
+			http.Error(w, "Missing Auth Token", http.StatusForbidden)
+		}
 
+		token = splitToken[1]
 		if ctx, ok := validToken(token, r.Context()); ok {
 			// We found the token in our map
 			log.Printf("Authenticated token %s", token)

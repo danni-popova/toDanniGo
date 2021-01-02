@@ -25,9 +25,9 @@ type ToDo struct {
 	Description string         `json:"description,omitempty" db:"description"`
 	Done        bool           `json:"done"   db:"done"`
 	CreatedAt   time.Time      `json:"createdAt,omitempty" db:"created_at"`
-	Deadline    sql.NullString `json:"deadline,omitempty" db:"deadline"`
 	UpdatedAt   sql.NullString `json:"updatedAt" db:"updated_at"`
 	DeletedAt   sql.NullString `json:"deletedAt" db:"deleted_at"`
+	Deadline    sql.NullString `json:"deadline,omitempty" db:"deadline"`
 }
 
 func (r *repository) Create(ctd ToDo) (td ToDo, err error) {

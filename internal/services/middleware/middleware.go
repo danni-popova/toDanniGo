@@ -38,6 +38,11 @@ func Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		token := r.Header.Get("Authorization")
 		splitToken := strings.Split(token, "Bearer ")
+
+		if len(splitToken) < 1 {
+			http.Error(w, "Missing token", http.StatusUnauthorized)
+		}
+
 		token = splitToken[1]
 
 		if ctx, ok := validToken(token, r.Context()); ok {

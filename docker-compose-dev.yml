@@ -45,6 +45,16 @@ services:
     networks:
       - default
 
+  projects:
+    build:
+      context: .
+      dockerfile: ./cmd/projects/Dockerfile
+    container_name: projects-service
+    ports:
+      - "8084:8084"
+    networks:
+      - default
+
 volumes:
   postgres-data:
 

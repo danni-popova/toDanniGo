@@ -36,7 +36,7 @@ func (s *service) CreateProject(w http.ResponseWriter, r *http.Request) {
 	proj.Creator = userID.(int)
 
 	// Call sql create
-	proj, err = s.repo.Create(userID.(int), proj)
+	proj, err = s.repo.Create(proj)
 	if err != nil {
 		writeFailure(w, err.Error())
 		return
@@ -64,6 +64,7 @@ func (s *service) CreateProject(w http.ResponseWriter, r *http.Request) {
 func (s *service) ListProjects(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value("user_id")
 	var projcts []projects.Project
+	log.Info("user ID is %d", userID.(int))
 	projcts, err := s.repo.List(userID.(int))
 
 	if err != nil {

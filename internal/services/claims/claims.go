@@ -11,7 +11,6 @@ const (
 
 type ToDanniClaims struct {
 	jwt.StandardClaims
-
 	UserInfo UserClaims `json:"user_info"`
 }
 

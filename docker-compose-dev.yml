@@ -55,6 +55,16 @@ services:
     networks:
       - default
 
+  accounts:
+    build:
+      context: .
+      dockerfile: ./cmd/account/Dockerfile
+    container_name: accountss-service
+    ports:
+      - "8085:8085"
+    networks:
+      - default
+
 volumes:
   postgres-data:
 

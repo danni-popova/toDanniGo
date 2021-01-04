@@ -13,11 +13,11 @@ services:
     networks:
       - default
 
-  user:
+  email:
     build:
       context: .
-      dockerfile: ./cmd/user/Dockerfile
-    container_name: user-service
+      dockerfile: ./cmd/email/Dockerfile
+    container_name: email-service
     networks:
       - default
 

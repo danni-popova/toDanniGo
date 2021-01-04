@@ -9,8 +9,6 @@ services:
   postgresql:
     image: postgres
     container_name: postgress-db
-    ports:
-      - "5432:5432"
     environment: *common-variables
     volumes:
       - postgres-data:/var/lib/postgresql/data
@@ -18,43 +16,32 @@ services:
     networks:
       - default
 
-#  user:
-#    environment: *common-variables
-#    build:
-#      context: .
-#      dockerfile: ./cmd/user/Dockerfile
-#    container_name: user-service
-#    networks:
-#      - default
-#
-#  todo:
-#    environment: *common-variables
-#    build:
-#      context: .
-#      dockerfile: ./cmd/todo/Dockerfile
-#    container_name: todo-service
-#    networks:
-#      - default
-#
-#  activity:
-#    environment: *common-variables
-#    build:
-#      context: .
-#      dockerfile: ./cmd/activity/Dockerfile
-#    container_name: activity-service
-#    networks:
-#      - default
-#
-#  projects:
-#    environment: *common-variables
-#    build:
-#      context: .
-#      dockerfile: ./cmd/projects/Dockerfile
-#    container_name: projects-service
-#    ports:
-#      - "8084:8084"
-#    networks:
-#      - default
+  todo:
+    environment: *common-variables
+    build:
+      context: .
+      dockerfile: ./cmd/todo/Dockerfile
+    container_name: todo-service
+    networks:
+      - default
+
+  activity:
+    environment: *common-variables
+    build:
+      context: .
+      dockerfile: ./cmd/activity/Dockerfile
+    container_name: activity-service
+    networks:
+      - default
+
+  projects:
+    environment: *common-variables
+    build:
+      context: .
+      dockerfile: ./cmd/projects/Dockerfile
+    container_name: projects-service
+    networks:
+      - default
 
   accounts:
     build:
@@ -62,8 +49,6 @@ services:
       dockerfile: ./cmd/account/Dockerfile
     environment: *common-variables
     container_name: accountss-service
-    ports:
-      - "8085:8085"
     networks:
       - default
 

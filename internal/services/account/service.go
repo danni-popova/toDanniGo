@@ -41,26 +41,24 @@ func (s service) Authenticate(w http.ResponseWriter, r *http.Request) {
 
 	// Check if both email and password are provided
 	if loginRequest.Email == "" || loginRequest.Password == "" {
-		response.WriteFailure(w, "password and email cannot be blank")
+		http.Error(w, "Missing credentials", http.StatusBadRequest)
 		return
 	}
 
 	authDetails, err := s.repo.SelectAuthDetails(loginRequest.Email)
 	if err != nil {
-		log.Error(err)
-		response.WriteFailure(w, "incorrect username or password")
+		http.Error(w, "Authorisation failed", http.StatusUnauthorized)
 		return
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(authDetails.Password), []byte(loginRequest.Password))
 	if err != nil {
-		log.Error(err)
-		response.WriteFailure(w, "wrong credentials")
+		http.Error(w, "Authorisation failed", http.StatusUnauthorized)
 		return
 	}
 
-	token := token.Generate(authDetails)
-	responseString := fmt.Sprintf("{ \"token\" : \"%s\" }", token)
+	tkn := token.Generate(authDetails)
+	responseString := fmt.Sprintf("{ \"token\" : \"%s\" }", tkn)
 	err = response.WriteSuccess(w, []byte(responseString))
 	if err != nil {
 		log.Error(err)

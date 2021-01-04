@@ -11,7 +11,7 @@ COPY . /build
 WORKDIR /build
 
 # Build the application
-RUN go build -o main ./cmd/user
+RUN go build -o main ./cmd/account
 
 # Move to /dist directory as the place for resulting binary folder
 WORKDIR /dist
@@ -20,7 +20,7 @@ WORKDIR /dist
 RUN cp /build/main .
 
 # Export necessary port
-EXPOSE 8080
+EXPOSE 8085
 
 # Command to run when starting the container
 CMD ["/dist/main"]

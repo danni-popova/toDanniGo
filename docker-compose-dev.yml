@@ -1,31 +1,25 @@
 version: '3.8'
 
+# The DB credentials that are used by multiple containers
+x-common-variables: &common-variables
+  POSTGRES_USER: docker
+  POSTGRES_PASSWORD: docker
+
 services:
   postgresql:
     image: postgres
     container_name: postgress-db
     ports:
       - "5432:5432"
-    environment:
-      - POSTGRES_USER=docker
-      - POSTGRES_PASSWORD=docker
+    environment: *common-variables
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./build/database/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - default
 
-  user:
-    build:
-      context: .
-      dockerfile: ./cmd/user/Dockerfile
-    container_name: user-service
-    ports:
-      - "8080:8080"
-    networks:
-      - default
-
-  todo:
+  tasks:
+    environment: *common-variables
     build:
       context: .
       dockerfile: ./cmd/todo/Dockerfile
@@ -36,6 +30,7 @@ services:
       - default
 
   activity:
+    environment: *common-variables
     build:
       context: .
       dockerfile: ./cmd/activity/Dockerfile
@@ -46,12 +41,24 @@ services:
       - default
 
   projects:
+    environment: *common-variables
     build:
       context: .
       dockerfile: ./cmd/projects/Dockerfile
     container_name: projects-service
     ports:
       - "8084:8084"
+    networks:
+      - default
+
+  accounts:
+    environment: *common-variables
+    build:
+      context: .
+      dockerfile: ./cmd/account/Dockerfile
+    container_name: accountss-service
+    ports:
+      - "8085:8085"
     networks:
       - default
 

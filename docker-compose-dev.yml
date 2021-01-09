@@ -4,6 +4,7 @@ version: '3.8'
 x-common-variables: &common-variables
   POSTGRES_USER: docker
   POSTGRES_PASSWORD: docker
+  POSTGRES_HOST: postgresql
 
 services:
   postgresql:
@@ -18,41 +19,9 @@ services:
     networks:
       - default
 
-  tasks:
-    environment: *common-variables
-    build:
-      context: .
-      dockerfile: ./cmd/todo/Dockerfile
-    container_name: todo-service
-    ports:
-    - "8081:8081"
-    networks:
-      - default
-
-  activity:
-    environment: *common-variables
-    build:
-      context: .
-      dockerfile: ./cmd/activity/Dockerfile
-    container_name: activity-service
-    ports:
-      - "8082:8082"
-    networks:
-      - default
-
-  projects:
-    environment: *common-variables
-    build:
-      context: .
-      dockerfile: ./cmd/projects/Dockerfile
-    container_name: projects-service
-    ports:
-      - "8084:8084"
-    networks:
-      - default
-
   accounts:
     environment: *common-variables
+    restart: unless-stopped
     build:
       context: .
       dockerfile: ./cmd/account/Dockerfile
@@ -61,6 +30,40 @@ services:
       - "8085:8085"
     networks:
       - default
+
+#  tasks:
+#    environment: *common-variables
+#    restart: unless-stopped
+#    build:
+#      context: .
+#      dockerfile: ./cmd/tasks/Dockerfile
+#    container_name: task-service
+#    ports:
+#    - "8081:8081"
+#    networks:
+#      - default
+##
+#  activity:
+#    environment: *common-variables
+#    build:
+#      context: .
+#      dockerfile: ./cmd/activity/Dockerfile
+#    container_name: activity-service
+#    ports:
+#      - "8082:8082"
+#    networks:
+#      - default
+#
+#  projects:
+#    environment: *common-variables
+#    build:
+#      context: .
+#      dockerfile: ./cmd/projects/Dockerfile
+#    container_name: projects-service
+#    ports:
+#      - "8084:8084"
+#    networks:
+#      - default
 
 volumes:
   postgres-data:

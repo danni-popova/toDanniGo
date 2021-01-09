@@ -26,6 +26,7 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 			referer:   r.Header.Get("Referer"),
 			userAgent: r.Header.Get("User-Agent"),
 		}
+		log.Println("Testing logging")
 		log.Println(reqInfo)
 		next.ServeHTTP(w, r)
 	})

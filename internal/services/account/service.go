@@ -36,7 +36,7 @@ func (s service) Authenticate(w http.ResponseWriter, r *http.Request) {
 	var loginRequest LoginRequest
 	err = json.Unmarshal(reqBody, &loginRequest)
 	if err != nil {
-		log.Error(err)
+		http.Error(w, "Bad request", http.StatusBadRequest)
 	}
 
 	// Check if both email and password are provided

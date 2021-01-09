@@ -5,8 +5,8 @@ on:
     branches: 
       - master
 #     paths:
-#     - 'cmd/todo/**.go'
-#     - 'internal/*/todo'
+#     - 'cmd/tasks/**.go'
+#     - 'internal/*/tasks'
 #     - 'internal/databases'
 #     - 'Dockerfile'
 
@@ -18,11 +18,11 @@ jobs:
     - name: Publish to Github Packages Registry
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
-        name: danni-popova/todannigo/todanni-todo-service
+        name: danni-popova/todannigo/todanni-tasks-service
         registry: docker.pkg.github.com
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.GITHUB_TOKEN }}
-        dockerfile: ./cmd/todo/Dockerfile
+        dockerfile: ./cmd/tasks/Dockerfile
         context: .
         tags: latest
     - name: Deploy package to digitalocean

@@ -88,7 +88,7 @@ func (s *service) AddMember(w http.ResponseWriter, r *http.Request) {
 	reqProjID := pathParams["id"]
 	projID, err := strconv.Atoi(reqProjID)
 
-	// Read request body and save into a todo
+	// Read request body and save into a tasks
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Error(err)

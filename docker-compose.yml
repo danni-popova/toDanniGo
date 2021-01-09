@@ -20,8 +20,8 @@ services:
     environment: *common-variables
     build:
       context: .
-      dockerfile: ./cmd/todo/Dockerfile
-    container_name: todo-service
+      dockerfile: cmd/tasks/Dockerfile
+    container_name: tasks-service
     networks:
       - default
 

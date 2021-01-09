@@ -25,3 +25,4 @@
 /.env
 /vendor/
 /cmd/email/sendgrid.env
+/cmd/tasks/.air.toml

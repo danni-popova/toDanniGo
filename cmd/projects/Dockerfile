@@ -20,7 +20,7 @@ WORKDIR /dist
 RUN cp /build/main .
 
 # Export necessary port
-EXPOSE 8084
+EXPOSE 8082
 
 # Command to run when starting the container
 CMD ["/dist/main"]

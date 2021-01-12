@@ -27,22 +27,34 @@ services:
       dockerfile: ./cmd/account/Dockerfile
     container_name: accountss-service
     ports:
-      - "8085:8085"
+      - "8081:8081"
     networks:
       - default
 
-#  tasks:
-#    environment: *common-variables
-#    restart: unless-stopped
-#    build:
-#      context: .
-#      dockerfile: ./cmd/tasks/Dockerfile
-#    container_name: task-service
-#    ports:
-#    - "8081:8081"
-#    networks:
-#      - default
-##
+  projects:
+    environment: *common-variables
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./cmd/projects/Dockerfile
+    container_name: projects-service
+    ports:
+      - "8082:8082"
+    networks:
+      - default
+
+  tasks:
+    environment: *common-variables
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./cmd/tasks/Dockerfile
+    container_name: task-service
+    ports:
+    - "8083:8083"
+    networks:
+      - default
+#
 #  activity:
 #    environment: *common-variables
 #    build:
@@ -50,20 +62,10 @@ services:
 #      dockerfile: ./cmd/activity/Dockerfile
 #    container_name: activity-service
 #    ports:
-#      - "8082:8082"
-#    networks:
-#      - default
-#
-#  projects:
-#    environment: *common-variables
-#    build:
-#      context: .
-#      dockerfile: ./cmd/projects/Dockerfile
-#    container_name: projects-service
-#    ports:
 #      - "8084:8084"
 #    networks:
 #      - default
+#
 
 volumes:
   postgres-data:

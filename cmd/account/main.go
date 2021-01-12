@@ -36,5 +36,5 @@ func main() {
 	api.HandleFunc("/register", svc.Register).Methods(http.MethodPost)
 	api.HandleFunc("/account/{id}", svc.GetAccountDetails).Methods(http.MethodGet)
 
-	log.Fatal(http.ListenAndServe(":8085", r))
+	log.Fatal(http.ListenAndServe(":8081", r))
 }

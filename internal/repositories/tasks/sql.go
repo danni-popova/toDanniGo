@@ -28,10 +28,6 @@ type Task struct {
 	Description null.String `json:"description" db:"description"`
 }
 
-func (t *Task) AfterUpdate(tx *gorm.DB) (err error) {
-	return err
-}
-
 func (r *repository) InsertTask(task Task) (Task, error) {
 	err := r.db.Create(&task).Error
 	return task, err

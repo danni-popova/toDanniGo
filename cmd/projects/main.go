@@ -33,5 +33,5 @@ func main() {
 	api.HandleFunc("/", svc.ListProjects).Methods(http.MethodGet)
 	api.HandleFunc("/", svc.CreateProject).Methods(http.MethodPost)
 	api.HandleFunc("/{id}", svc.AddMember).Methods(http.MethodPatch)
-	log.Fatal(http.ListenAndServe(":8084", r))
+	log.Fatal(http.ListenAndServe(":8082", r))
 }

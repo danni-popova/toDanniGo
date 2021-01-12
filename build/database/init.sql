@@ -14,8 +14,8 @@ create table account_data
     last_name       varchar                             not null,
     job_role        varchar,
     profile_picture varchar,
-    created_at      timestamp default current_timestamp not null,
-    updated_at      timestamp default current_timestamp not null,
+    created_at      timestamp default CURRENT_TIMESTAMP not null,
+    updated_at      timestamp default CURRENT_TIMESTAMP not null,
     deleted_at      timestamp
 );
 
@@ -26,26 +26,53 @@ alter table account_data
     add constraint account_data_pk
         primary key (id);
 
+-- Projects table holding the project details
+
+create table projects
+(
+    id serial not null,
+    title varchar not null,
+    description varchar,
+    logo varchar,
+    created_at timestamp default CURRENT_TIMESTAMP,
+    updated_at timestamp default CURRENT_TIMESTAMP,
+    deleted_at timestamp,
+    is_default boolean default false,
+    creator int not null
+        constraint projects_account_data_id_fk
+            references account_data
+);
+
+create unique index projects_id_uindex
+    on projects (id);
+
+alter table projects
+    add constraint projects_pk
+        primary key (id);
 
 -- Task table holding the task details
 
 create table tasks
 (
-    id           serial                              not null,
-    project      int                                 not null,
+    id           serial                              not null
+        constraint tasks_pk
+            primary key,
+    project      integer                             not null
+        constraint tasks_projects_id_fk
+            references projects,
     title        varchar                             not null,
     status       varchar,
     description  varchar,
     done         boolean   default false,
     deadline     timestamp,
     created_at   timestamp default CURRENT_TIMESTAMP not null,
-    updated_at  timestamp default CURRENT_TIMESTAMP not null,
+    updated_at   timestamp default CURRENT_TIMESTAMP not null,
     deleted_at   timestamp,
     completed_at timestamp,
-    creator      int                                 not null
+    creator      integer                             not null
         constraint tasks_account_data_id_fk_2
             references account_data,
-    assignee     int
+    assignee     integer
         constraint tasks_account_data_id_fk
             references account_data
 );

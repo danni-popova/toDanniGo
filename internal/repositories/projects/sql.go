@@ -1,11 +1,11 @@
 package projects
 
 import (
-	"database/sql"
 	"time"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+	"gopkg.in/guregu/null.v3"
 )
 
 type repository struct {
@@ -19,15 +19,15 @@ func NewRepository(db *sqlx.DB) Repository {
 }
 
 type Project struct {
-	ID          int            `json:"id"                    db:"id"`
-	Creator     int            `json:"creator"               db:"creator"`
-	IsDefault   bool           `json:"isDefault"             db:"is_default"`
-	Title       string         `json:"title"                 db:"title"`
-	Description string         `json:"description,omitempty" db:"description"`
-	Logo        string         `json:"logo,omitempty"        db:"logo"`
-	CreatedAt   time.Time      `json:"createdAt,omitempty"   db:"created_at"`
-	UpdatedAt   sql.NullString `json:"updatedAt,omitempty"   db:"updated_at"`
-	DeletedAt   sql.NullString `json:"deletedAt,omitempty"   db:"deleted_at"`
+	ID          int         `json:"id"                    db:"id"`
+	Creator     int         `json:"creator"               db:"creator"`
+	IsDefault   bool        `json:"isDefault"             db:"is_default"`
+	Title       string      `json:"title"                 db:"title"`
+	Description string      `json:"description,omitempty" db:"description"`
+	Logo        string      `json:"logo,omitempty"        db:"logo"`
+	CreatedAt   time.Time   `json:"createdAt,omitempty"   db:"created_at"`
+	UpdatedAt   null.String `json:"updatedAt,omitempty"   db:"updated_at"`
+	DeletedAt   null.String `json:"deletedAt,omitempty"   db:"deleted_at"`
 }
 
 func (r *repository) Create(project Project) (Project, error) {
